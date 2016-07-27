@@ -3,26 +3,8 @@ Feature: Importing files
     As a Behat User
     I need to import service definitions and parameters from files
 
-    Scenario: Importing a service from a Yaml file
-        Given a Behat configuration containing:
-        """
-        default:
-            suites:
-                default:
-                    contexts:
-                        - FeatureContext:
-                            - "%foobar%"
-            extensions:
-                FriendsOfBehat\ServiceContainerExtension:
-                    imports:
-                        - features/bootstrap/config/services.yml
-        """
-        And a config file "features/bootstrap/config/services.yml" containing:
-        """
-        parameters:
-            foobar: "shit happens"
-        """
-        And a context file "features/bootstrap/FeatureContext.php" containing:
+    Background:
+        Given a context file "features/bootstrap/FeatureContext.php" containing:
         """
         <?php
 
@@ -65,6 +47,27 @@ Feature: Importing files
             Scenario:
                 Given the parameter was injected to the context
                 Then it should contain "shit happens"
+        """
+
+
+    Scenario: Importing a service from a Yaml file
+        Given a Behat configuration containing:
+        """
+        default:
+            suites:
+                default:
+                    contexts:
+                        - FeatureContext:
+                            - "%foobar%"
+            extensions:
+                FriendsOfBehat\ServiceContainerExtension:
+                    imports:
+                        - features/bootstrap/config/services.yml
+        """
+        And a config file "features/bootstrap/config/services.yml" containing:
+        """
+        parameters:
+            foobar: "shit happens"
         """
         When I run Behat
         Then it should pass
