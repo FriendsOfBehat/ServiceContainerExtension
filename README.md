@@ -20,4 +20,5 @@ default:
             imports:
                 - "features/bootstrap/config/services.xml"
                 - "features/bootstrap/config/services.yml"
+                - "features/bootstrap/config/services.php"
 ```
