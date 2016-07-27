@@ -43,7 +43,7 @@ final class FeatureContext implements Context
     /**
      * @BeforeFeature
      */
-    public function beforeFeature()
+    public static function beforeFeature()
     {
         self::$workingDir = sprintf('%s/%s/', sys_get_temp_dir(), uniqid('', true));
         self::$filesystem = new Filesystem();
@@ -75,7 +75,9 @@ final class FeatureContext implements Context
     }
 
     /**
-     * @Given a|an (context|feature) file :file containing:
+     * @Given a config file :file containing:
+     * @Given a context file :file containing:
+     * @Given a feature file :file containing:
      */
     public function thereIsFile($file, PyStringNode $content)
     {
