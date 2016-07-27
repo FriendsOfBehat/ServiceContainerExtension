@@ -71,3 +71,26 @@ Feature: Importing files
         """
         When I run Behat
         Then it should pass
+
+    Scenario: Importing a service from a PHP file
+        Given a Behat configuration containing:
+        """
+        default:
+            suites:
+                default:
+                    contexts:
+                        - FeatureContext:
+                            - "%foobar%"
+            extensions:
+                FriendsOfBehat\ServiceContainerExtension:
+                    imports:
+                        - features/bootstrap/config/services.php
+        """
+        And a config file "features/bootstrap/config/services.php" containing:
+        """
+        <?php
+        
+        $container->setParameter('foobar', 'shit happens');
+        """
+        When I run Behat
+        Then it should pass
