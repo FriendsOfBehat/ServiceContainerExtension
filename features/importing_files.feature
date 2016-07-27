@@ -1,5 +1,5 @@
 Feature: Importing files
-    In order to declare own services inside Behat container without writing an extension
+    In order to declare own services and parameters inside Behat container without writing an extension
     As a Behat User
     I need to import service definitions and parameters from files
 
@@ -50,7 +50,7 @@ Feature: Importing files
         """
 
 
-    Scenario: Importing a service from a Yaml file
+    Scenario: Importing a parameter from a Yaml file
         Given a Behat configuration containing:
         """
         default:
@@ -72,7 +72,7 @@ Feature: Importing files
         When I run Behat
         Then it should pass
 
-    Scenario: Importing a service from a XML file
+    Scenario: Importing a parameter from a XML file
         Given a Behat configuration containing:
         """
         default:
@@ -97,7 +97,7 @@ Feature: Importing files
         When I run Behat
         Then it should pass
 
-    Scenario: Importing a service from a PHP file
+    Scenario: Importing a parameter from a PHP file
         Given a Behat configuration containing:
         """
         default:
