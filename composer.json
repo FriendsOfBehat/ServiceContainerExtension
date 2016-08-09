@@ -15,6 +15,7 @@
         "behat/behat": "^3.1"
     },
     "require-dev": {
+        "friends-of-behat/test-context": "^0.1.0",
         "symfony/process": "^2.7|^3.0"
     },
     "autoload": {
