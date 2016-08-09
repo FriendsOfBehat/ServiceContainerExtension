@@ -1,3 +1,5 @@
 default:
-    extensions:
-        FriendsOfBehat\ServiceContainerExtension: ~
+    suites:
+        default:
+            contexts:
+                - FriendsOfBehat\TestContext\Context\TestContext
