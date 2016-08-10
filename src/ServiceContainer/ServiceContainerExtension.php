@@ -16,6 +16,7 @@ use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -28,6 +29,28 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 final class ServiceContainerExtension implements Extension
 {
     /**
+     * @var LoaderFactory
+     */
+    private $loaderFactory;
+
+    public function __construct()
+    {
+        $this->loaderFactory = new DefaultLoaderFactory();
+    }
+
+    /**
+     * @api
+     *
+     * @param LoaderFactory $loaderFactory
+     */
+    public function setLoaderCallable(LoaderFactory $loaderFactory)
+    {
+        $this->loaderFactory = $loaderFactory;
+    }
+
+    /**
+     * @internal
+     *
      * {@inheritdoc}
      */
     public function getConfigKey()
@@ -36,6 +59,8 @@ final class ServiceContainerExtension implements Extension
     }
 
     /**
+     * @internal
+     *
      * {@inheritdoc}
      */
     public function initialize(ExtensionManager $extensionManager)
@@ -44,6 +69,8 @@ final class ServiceContainerExtension implements Extension
     }
 
     /**
+     * @internal
+     *
      * {@inheritdoc}
      */
     public function configure(ArrayNodeDefinition $builder)
@@ -57,17 +84,13 @@ final class ServiceContainerExtension implements Extension
     }
 
     /**
+     * @internal
+     *
      * {@inheritdoc}
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $fileLocator = new FileLocator($container->getParameter('paths.base'));
-
-        $loader = new DelegatingLoader(new LoaderResolver([
-            new XmlFileLoader($container, $fileLocator),
-            new YamlFileLoader($container, $fileLocator),
-            new PhpFileLoader($container, $fileLocator),
-        ]));
+        $loader = $this->loaderFactory->createLoader($container, $config);
 
         foreach ($config['imports'] as $file) {
             $loader->load($file);
@@ -75,6 +98,8 @@ final class ServiceContainerExtension implements Extension
     }
 
     /**
+     * @internal
+     *
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
