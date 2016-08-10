@@ -29,31 +29,23 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 final class ServiceContainerExtension implements Extension
 {
     /**
-     * @var callable<ContainerBuilder, array>:LoaderInterface
+     * @var LoaderFactory
      */
-    private $loaderCallable;
+    private $loaderFactory;
 
     public function __construct()
     {
-        $this->loaderCallable = function (ContainerBuilder $container, array $config) {
-            $fileLocator = new FileLocator($container->getParameter('paths.base'));
-
-            return new DelegatingLoader(new LoaderResolver([
-                new XmlFileLoader($container, $fileLocator),
-                new YamlFileLoader($container, $fileLocator),
-                new PhpFileLoader($container, $fileLocator),
-            ]));
-        };
+        $this->loaderFactory = new DefaultLoaderFactory();
     }
 
     /**
      * @api
      *
-     * @param callable<ContainerBuilder, array>:LoaderInterface $loaderCallable
+     * @param LoaderFactory $loaderFactory
      */
-    public function setLoaderCallable(callable $loaderCallable)
+    public function setLoaderCallable(LoaderFactory $loaderFactory)
     {
-        $this->loaderCallable = $loaderCallable;
+        $this->loaderFactory = $loaderFactory;
     }
 
     /**
@@ -98,10 +90,7 @@ final class ServiceContainerExtension implements Extension
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $loaderCallable = $this->loaderCallable;
-
-        /** @var LoaderInterface $loader */
-        $loader = $loaderCallable($container, $config);
+        $loader = $this->loaderFactory->createLoader($container, $config);
 
         foreach ($config['imports'] as $file) {
             $loader->load($file);
