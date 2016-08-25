@@ -5,20 +5,20 @@ Allows to declare own services inside Behat container without writing an extensi
 ## Usage
 
 1. Install it:
-
-```bash
-$ composer require friends-of-behat/service-container-extension --dev
-```
+    
+    ```bash
+    $ composer require friends-of-behat/service-container-extension --dev
+    ```
 
 2. Enable and configure:
-
-```yaml
-default:
-    # ...
-    extensions:
-        FriendsOfBehat\ServiceContainerExtension:
-            imports:
-                - "features/bootstrap/config/services.xml"
-                - "features/bootstrap/config/services.yml"
-                - "features/bootstrap/config/services.php"
-```
+    
+    ```yaml
+    default:
+        # ...
+        extensions:
+            FriendsOfBehat\ServiceContainerExtension:
+                imports:
+                    - "features/bootstrap/config/services.xml"
+                    - "features/bootstrap/config/services.yml"
+                    - "features/bootstrap/config/services.php"
+    ```
