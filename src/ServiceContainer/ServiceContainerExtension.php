@@ -23,9 +23,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-/**
- * @author Kamil Kokot <kamil@kokot.me>
- */
 final class ServiceContainerExtension implements Extension
 {
     /**

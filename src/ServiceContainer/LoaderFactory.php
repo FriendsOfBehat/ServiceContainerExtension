@@ -14,9 +14,6 @@ namespace FriendsOfBehat\ServiceContainerExtension\ServiceContainer;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-/**
- * @author Kamil Kokot <kamil.kokot@lakion.com>
- */
 interface LoaderFactory
 {
     /**
