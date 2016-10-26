@@ -45,7 +45,6 @@ Allows to declare own services inside Behat container without writing an extensi
     
     ```php
     // features/bootstrap/config/services.php
- 
     use Symfony\Component\DependencyInjection\Definition;
     
     $container->setDefinition('acme.my_service', new Definition(\Acme\MyService::class));
