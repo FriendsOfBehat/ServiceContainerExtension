@@ -62,7 +62,6 @@ final class ServiceContainerExtension implements Extension
      */
     public function initialize(ExtensionManager $extensionManager)
     {
-
     }
 
     /**
@@ -101,6 +100,5 @@ final class ServiceContainerExtension implements Extension
      */
     public function process(ContainerBuilder $container)
     {
-
     }
 }
