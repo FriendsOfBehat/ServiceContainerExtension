@@ -40,7 +40,7 @@ final class ServiceContainerExtension implements Extension
      *
      * @param LoaderFactory $loaderFactory
      */
-    public function setLoaderCallable(LoaderFactory $loaderFactory)
+    public function setLoaderFactory(LoaderFactory $loaderFactory)
     {
         $this->loaderFactory = $loaderFactory;
     }
