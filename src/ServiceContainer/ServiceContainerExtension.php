@@ -33,7 +33,7 @@ final class ServiceContainerExtension implements Extension
     private $loaderFactory;
 
     /**
-     * @var CompilerPassInterface
+     * @var CompilerPassInterface|null
      */
     private $crossContainerProcessor;
 
