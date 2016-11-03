@@ -1,4 +1,7 @@
-Feature: Not crashing Behat
+Feature: Usage of ServiceContainerExtension together with CrossContainerExtension
+    In order to reference cross-container services and parameters inside Behat container
+    As a Behat User
+    I need to use ServiceContainerExtension and CrossContainerExtension together
 
     Scenario: Not crashing Behat
         Given a Behat configuration containing:
