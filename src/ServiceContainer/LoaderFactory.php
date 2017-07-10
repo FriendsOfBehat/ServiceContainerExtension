@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ServiceContainerExtension package.
  *
@@ -22,5 +24,5 @@ interface LoaderFactory
      *
      * @return LoaderInterface
      */
-    public function createLoader(ContainerBuilder $container, array $config);
+    public function createLoader(ContainerBuilder $container, array $config): LoaderInterface;
 }
