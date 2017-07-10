@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ServiceContainerExtension package.
  *
@@ -47,7 +49,7 @@ final class ServiceContainerExtension implements Extension
      *
      * @param LoaderFactory $loaderFactory
      */
-    public function setLoaderFactory(LoaderFactory $loaderFactory)
+    public function setLoaderFactory(LoaderFactory $loaderFactory): void
     {
         $this->loaderFactory = $loaderFactory;
     }
@@ -57,7 +59,7 @@ final class ServiceContainerExtension implements Extension
      *
      * {@inheritdoc}
      */
-    public function getConfigKey()
+    public function getConfigKey(): string
     {
         return 'fob_service_container';
     }
@@ -67,7 +69,7 @@ final class ServiceContainerExtension implements Extension
      *
      * {@inheritdoc}
      */
-    public function initialize(ExtensionManager $extensionManager)
+    public function initialize(ExtensionManager $extensionManager): void
     {
         /** @var CrossContainerExtension $extension */
         $extension = $extensionManager->getExtension('fob_cross_container');
@@ -82,7 +84,7 @@ final class ServiceContainerExtension implements Extension
      *
      * {@inheritdoc}
      */
-    public function configure(ArrayNodeDefinition $builder)
+    public function configure(ArrayNodeDefinition $builder): void
     {
         $builder
             ->children()
@@ -97,7 +99,7 @@ final class ServiceContainerExtension implements Extension
      *
      * {@inheritdoc}
      */
-    public function load(ContainerBuilder $container, array $config)
+    public function load(ContainerBuilder $container, array $config): void
     {
         $loader = $this->loaderFactory->createLoader($container, $config);
 
@@ -111,7 +113,7 @@ final class ServiceContainerExtension implements Extension
      *
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (null !== $this->crossContainerProcessor) {
             $this->crossContainerProcessor->process($container);
