@@ -27,36 +27,17 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
+/**
+ * @internal
+ */
 final class ServiceContainerExtension implements Extension
 {
-    /**
-     * @var LoaderFactory
-     */
-    private $loaderFactory;
-
     /**
      * @var CompilerPassInterface|null
      */
     private $crossContainerProcessor;
 
-    public function __construct()
-    {
-        $this->loaderFactory = new DefaultLoaderFactory();
-    }
-
     /**
-     * @api
-     *
-     * @param LoaderFactory $loaderFactory
-     */
-    public function setLoaderFactory(LoaderFactory $loaderFactory): void
-    {
-        $this->loaderFactory = $loaderFactory;
-    }
-
-    /**
-     * @internal
-     *
      * {@inheritdoc}
      */
     public function getConfigKey(): string
@@ -65,8 +46,6 @@ final class ServiceContainerExtension implements Extension
     }
 
     /**
-     * @internal
-     *
      * {@inheritdoc}
      */
     public function initialize(ExtensionManager $extensionManager): void
@@ -80,8 +59,6 @@ final class ServiceContainerExtension implements Extension
     }
 
     /**
-     * @internal
-     *
      * {@inheritdoc}
      */
     public function configure(ArrayNodeDefinition $builder): void
@@ -90,18 +67,18 @@ final class ServiceContainerExtension implements Extension
             ->children()
                 ->arrayNode('imports')
                     ->performNoDeepMerging()
-                    ->prototype('scalar')
+                    ->prototype('scalar')->end()
+                ->end()
+            ->end()
         ;
     }
 
     /**
-     * @internal
-     *
      * {@inheritdoc}
      */
     public function load(ContainerBuilder $container, array $config): void
     {
-        $loader = $this->loaderFactory->createLoader($container, $config);
+        $loader = $this->createLoader($container, $config);
 
         foreach ($config['imports'] as $file) {
             $loader->load($file);
@@ -109,8 +86,6 @@ final class ServiceContainerExtension implements Extension
     }
 
     /**
-     * @internal
-     *
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container): void
@@ -118,5 +93,16 @@ final class ServiceContainerExtension implements Extension
         if (null !== $this->crossContainerProcessor) {
             $this->crossContainerProcessor->process($container);
         }
+    }
+
+    private function createLoader(ContainerBuilder $container, array $config): LoaderInterface
+    {
+        $fileLocator = new FileLocator($container->getParameter('paths.base'));
+
+        return new DelegatingLoader(new LoaderResolver([
+            new XmlFileLoader($container, $fileLocator),
+            new YamlFileLoader($container, $fileLocator),
+            new PhpFileLoader($container, $fileLocator),
+        ]));
     }
 }
