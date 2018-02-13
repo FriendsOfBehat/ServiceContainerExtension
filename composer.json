@@ -16,8 +16,7 @@
     },
     "require-dev": {
         "friends-of-behat/cross-container-extension": "^1.0",
-        "friends-of-behat/test-context": "^1.0",
-        "symfony/process": "^2.7|^3.0"
+        "friends-of-behat/test-context": "^1.0"
     },
     "suggest": {
         "friends-of-behat/cross-container-extension": "^1.0"
