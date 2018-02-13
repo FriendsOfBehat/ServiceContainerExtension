@@ -2,16 +2,11 @@ language: php
 
 php:
     - 7.1
-    - nightly
-
-matrix:
-    allow_failures:
-        - php: nightly
-    fast_finish: true
+    - 7.2
 
 cache:
     directories:
-        - vendor
+        - ~/.composer/cache/files
 
 before_install:
     - phpenv config-rm xdebug.ini || true
