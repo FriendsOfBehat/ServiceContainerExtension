@@ -33,11 +33,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 final class ServiceContainerExtension implements Extension
 {
     /**
-     * @var CompilerPassInterface|null
-     */
-    private $crossContainerProcessor;
-
-    /**
      * {@inheritdoc}
      */
     public function getConfigKey(): string
@@ -50,12 +45,7 @@ final class ServiceContainerExtension implements Extension
      */
     public function initialize(ExtensionManager $extensionManager): void
     {
-        /** @var CrossContainerExtension $extension */
-        $extension = $extensionManager->getExtension('fob_cross_container');
 
-        if (null !== $extension) {
-            $this->crossContainerProcessor = $extension->getCrossContainerProcessor();
-        }
     }
 
     /**
@@ -90,9 +80,7 @@ final class ServiceContainerExtension implements Extension
      */
     public function process(ContainerBuilder $container): void
     {
-        if (null !== $this->crossContainerProcessor) {
-            $this->crossContainerProcessor->process($container);
-        }
+
     }
 
     private function createLoader(ContainerBuilder $container, array $config): LoaderInterface

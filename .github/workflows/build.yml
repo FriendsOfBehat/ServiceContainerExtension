@@ -38,5 +38,9 @@ jobs:
                 run: composer validate --strict --ansi
 
             -
+                name: Run Psalm
+                run: vendor/bin/psalm src --no-progress
+
+            -
                 name: Run tests
                 run: vendor/bin/behat -f progress --strict -vvv --no-interaction --colors
