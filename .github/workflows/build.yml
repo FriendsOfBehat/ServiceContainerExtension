@@ -19,45 +19,52 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
+                # Behat 3.31 only supports symfony/config ^5.4||^6.4||^7.0, so only Symfony 7.4 here
                 php-version:
                     - '8.3'
                     - '8.4'
+                    - '8.5'
                 symfony-version:
                     - '7.4.*'
-                    - '8.0.*'
-                    - '8.1.*'
                 behat-version:
                     - '3.31.*'
                 experimental:
                     - false
                 include:
+                    # Behat 4 + Symfony 7.4 (all PHP versions)
                     -
                         php-version: '8.3'
                         symfony-version: '7.4.*'
                         behat-version: '4.x-dev as 4.0.0'
                         experimental: true
                     -
-                        php-version: '8.3'
+                        php-version: '8.4'
+                        symfony-version: '7.4.*'
+                        behat-version: '4.x-dev as 4.0.0'
+                        experimental: true
+                    -
+                        php-version: '8.5'
+                        symfony-version: '7.4.*'
+                        behat-version: '4.x-dev as 4.0.0'
+                        experimental: true
+                    # Behat 4 + Symfony 8.x requires PHP >=8.4
+                    -
+                        php-version: '8.4'
                         symfony-version: '8.0.*'
                         behat-version: '4.x-dev as 4.0.0'
                         experimental: true
                     -
-                        php-version: '8.3'
+                        php-version: '8.4'
                         symfony-version: '8.1.*'
                         behat-version: '4.x-dev as 4.0.0'
                         experimental: true
                     -
-                        php-version: '8.4'
-                        symfony-version: '7.4.*'
-                        behat-version: '4.x-dev as 4.0.0'
-                        experimental: true
-                    -
-                        php-version: '8.4'
+                        php-version: '8.5'
                         symfony-version: '8.0.*'
                         behat-version: '4.x-dev as 4.0.0'
                         experimental: true
                     -
-                        php-version: '8.4'
+                        php-version: '8.5'
                         symfony-version: '8.1.*'
                         behat-version: '4.x-dev as 4.0.0'
                         experimental: true
