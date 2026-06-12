@@ -19,25 +19,21 @@ Feature: Importing files
                 $this->parameter = $parameter;
             }
 
-            /**
-             * @Given the parameter was injected to the context
-             */
-            public function theParameterWasInjectedToTheContext()
+            #[\Behat\Step\Given('the parameter was injected to the context')]
+            public function theParameterWasInjectedToTheContext(): void
             {
                 if (null === $this->parameter) {
                     throw new \DomainException('No parameter was injected (or null one)!');
                 }
             }
 
-            /**
-             * @Then it should contain :content
-             */
-             public function itShouldContain($content)
-             {
-                 if ($content !== $this->parameter) {
+            #[\Behat\Step\Then('it should contain :content')]
+            public function itShouldContain(string $content): void
+            {
+                if ($content !== $this->parameter) {
                     throw new \DomainException(sprintf('Expected to get "%s", got "%s"!', $content, $this->parameter));
-                 }
-             }
+                }
+            }
         }
         """
         And a feature file "features/my.feature" containing:
