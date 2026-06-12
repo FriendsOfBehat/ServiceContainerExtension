@@ -13,8 +13,9 @@ on:
 
 jobs:
     test:
-        name: PHP ${{ matrix.php-version }} + Symfony ${{ matrix.symfony-version }}
+        name: PHP ${{ matrix.php-version }} + Symfony ${{ matrix.symfony-version }} + Behat ${{ matrix.behat-version }}
         runs-on: ubuntu-latest
+        continue-on-error: ${{ matrix.experimental }}
         strategy:
             fail-fast: false
             matrix:
@@ -25,6 +26,41 @@ jobs:
                     - '7.4.*'
                     - '8.0.*'
                     - '8.1.*'
+                behat-version:
+                    - '3.31.*'
+                experimental:
+                    - false
+                include:
+                    -
+                        php-version: '8.3'
+                        symfony-version: '7.4.*'
+                        behat-version: '4.x-dev as 4.0.0'
+                        experimental: true
+                    -
+                        php-version: '8.3'
+                        symfony-version: '8.0.*'
+                        behat-version: '4.x-dev as 4.0.0'
+                        experimental: true
+                    -
+                        php-version: '8.3'
+                        symfony-version: '8.1.*'
+                        behat-version: '4.x-dev as 4.0.0'
+                        experimental: true
+                    -
+                        php-version: '8.4'
+                        symfony-version: '7.4.*'
+                        behat-version: '4.x-dev as 4.0.0'
+                        experimental: true
+                    -
+                        php-version: '8.4'
+                        symfony-version: '8.0.*'
+                        behat-version: '4.x-dev as 4.0.0'
+                        experimental: true
+                    -
+                        php-version: '8.4'
+                        symfony-version: '8.1.*'
+                        behat-version: '4.x-dev as 4.0.0'
+                        experimental: true
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -40,42 +76,8 @@ jobs:
             - name: Lock Symfony version
               run: VERSION=${{ matrix.symfony-version }} .github/workflows/lock-symfony-version.sh
 
-            - name: Install dependencies
-              run: composer install --prefer-dist --no-progress
-
-            - name: Run tests
-              run: composer test
-
-    test-behat4:
-        name: PHP ${{ matrix.php-version }} + Behat 4.x-dev + Symfony ${{ matrix.symfony-version }}
-        runs-on: ubuntu-latest
-        continue-on-error: true
-        strategy:
-            fail-fast: false
-            matrix:
-                php-version:
-                    - '8.3'
-                symfony-version:
-                    - '7.4.*'
-                    - '8.0.*'
-                    - '8.1.*'
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  coverage: none
-                  ini-values: "memory_limit=-1, zend.assertions=1"
-                  php-version: ${{ matrix.php-version }}
-                  tools: composer:v2
-
-            - name: Lock Symfony version
-              run: VERSION=${{ matrix.symfony-version }} .github/workflows/lock-symfony-version.sh
-
-            - name: Require Behat 4 dev
-              run: composer require --no-update "behat/behat:4.x-dev as 4.0.0"
+            - name: Lock Behat version
+              run: VERSION="${{ matrix.behat-version }}" .github/workflows/lock-behat-version.sh
 
             - name: Install dependencies
               run: composer install --prefer-dist --no-progress
