@@ -1,8 +1,10 @@
 name: Build
 
 on:
-    push: ~
-    pull_request: ~
+    push:
+        branches:
+            - master
+    pull_request:
     release:
         types: [created]
     schedule:
@@ -10,37 +12,75 @@ on:
             cron: "0 1 * * 6" # Run at 1am every Saturday
 
 jobs:
-    tests:
-        runs-on: ubuntu-latest
-        name: "PHP ${{ matrix.php }}"
+    test:
+        name: PHP ${{ matrix.php-version }} + Symfony ${{ matrix.symfony-version }}
+        runs-on: ubuntu-22.04
         strategy:
             fail-fast: false
             matrix:
-                php: ["7.3", "7.4", "8.0"]
-
+                php-version:
+                    - '8.3'
+                    - '8.4'
+                    - '8.5'
+                symfony-version:
+                    - '7.4.*'
         steps:
-            -
-                uses: actions/checkout@v2
+            - name: Checkout
+              uses: actions/checkout@v3
 
-            -
-                name: Setup PHP
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: "${{ matrix.php }}"
-                    coverage: none
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  ini-values: "memory_limit=-1, zend.assertions=1"
+                  php-version: ${{ matrix.php-version }}
+                  tools: composer:v2
 
-            -
-                name: Install dependencies
-                run: composer update
+            - name: Lock Symfony version
+              run: VERSION=${{ matrix.symfony-version }} .github/workflows/lock-symfony-version.sh
 
-            -
-                name: Composer validate
-                run: composer validate --strict --ansi
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress
 
-            -
-                name: Run Psalm
-                run: vendor/bin/psalm src --no-progress
+            - name: Run tests
+              run: composer test
 
-            -
-                name: Run tests
-                run: vendor/bin/behat -f progress --strict -vvv --no-interaction --colors
+    psalm:
+        name: Run Psalm
+        runs-on: ubuntu-22.04
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  ini-values: "memory_limit=-1, zend.assertions=1"
+                  php-version: 8.3
+                  tools: composer:v2
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress
+
+            - name: Run Psalm
+              run: vendor/bin/psalm src --no-progress
+
+    validate-composer:
+        name: Validate composer.json
+        runs-on: ubuntu-22.04
+        continue-on-error: false
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  ini-values: "memory_limit=-1, zend.assertions=1"
+                  php-version: 8.3
+                  tools: composer:v2
+
+            - name: Validate composer.json
+              run: composer validate --strict
