@@ -2,4 +2,4 @@ default:
     suites:
         default:
             contexts:
-                - Tests\Behat\Context\TestContext
+                - FriendsOfBehat\TestContext\Context\TestContext

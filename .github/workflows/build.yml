@@ -14,19 +14,20 @@ on:
 jobs:
     test:
         name: PHP ${{ matrix.php-version }} + Symfony ${{ matrix.symfony-version }}
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
                 php-version:
                     - '8.3'
                     - '8.4'
-                    - '8.5'
                 symfony-version:
                     - '7.4.*'
+                    - '8.0.*'
+                    - '8.1.*'
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -45,12 +46,91 @@ jobs:
             - name: Run tests
               run: composer test
 
-    psalm:
-        name: Run Psalm
-        runs-on: ubuntu-22.04
+    test-behat4:
+        name: PHP ${{ matrix.php-version }} + Behat 4.x-dev + Symfony ${{ matrix.symfony-version }}
+        runs-on: ubuntu-latest
+        continue-on-error: true
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version:
+                    - '8.3'
+                symfony-version:
+                    - '7.4.*'
+                    - '8.0.*'
+                    - '8.1.*'
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  ini-values: "memory_limit=-1, zend.assertions=1"
+                  php-version: ${{ matrix.php-version }}
+                  tools: composer:v2
+
+            - name: Lock Symfony version
+              run: VERSION=${{ matrix.symfony-version }} .github/workflows/lock-symfony-version.sh
+
+            - name: Require Behat 4 dev
+              run: composer require --no-update "behat/behat:4.x-dev as 4.0.0"
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress
+
+            - name: Run tests
+              run: composer test
+
+    phpstan:
+        name: PHPStan
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  ini-values: "memory_limit=-1, zend.assertions=1"
+                  php-version: 8.3
+                  tools: composer:v2
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress
+
+            - name: Run PHPStan
+              run: composer phpstan
+
+    cs:
+        name: PHP CS Fixer
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  ini-values: "memory_limit=-1, zend.assertions=1"
+                  php-version: 8.3
+                  tools: composer:v2
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress
+
+            - name: Run PHP CS Fixer
+              run: composer cs
+
+    psalm:
+        name: Run Psalm
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -68,11 +148,11 @@ jobs:
 
     validate-composer:
         name: Validate composer.json
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         continue-on-error: false
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2

@@ -58,8 +58,13 @@ final class ServiceContainerExtension implements Extension
     public function load(ContainerBuilder $container, array $config): void
     {
         $loader = $this->createLoader($container);
+        $imports = $config['imports'] ?? [];
 
-        foreach ($config['imports'] as $file) {
+        if (!\is_array($imports)) {
+            return;
+        }
+
+        foreach ($imports as $file) {
             $loader->load($file);
         }
     }
@@ -71,7 +76,12 @@ final class ServiceContainerExtension implements Extension
 
     private function createLoader(ContainerBuilder $container): LoaderInterface
     {
-        $fileLocator = new FileLocator($container->getParameter('paths.base'));
+        $basePath = $container->getParameter('paths.base');
+        if (!\is_string($basePath)) {
+            throw new \UnexpectedValueException('Parameter "paths.base" must be a string.');
+        }
+
+        $fileLocator = new FileLocator($basePath);
 
         return new DelegatingLoader(new LoaderResolver([
             new YamlFileLoader($container, $fileLocator),

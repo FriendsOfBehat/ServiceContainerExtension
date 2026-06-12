@@ -11,6 +11,6 @@ return (new Config())
         (new Profile('default'))
             ->withSuite(
                 (new Suite('default'))
-                    ->withContexts(\Tests\Behat\Context\TestContext::class)
+                    ->withContexts(\FriendsOfBehat\TestContext\Context\TestContext::class)
             )
     );

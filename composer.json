@@ -11,14 +11,14 @@
     ],
     "require": {
         "php": "^8.3",
-        "behat/behat": "^3.31",
-        "symfony/config": "^7.4",
-        "symfony/dependency-injection": "^7.4"
+        "behat/behat": "^3.31 || ^4.0",
+        "symfony/config": "^7.4 || ^8.0",
+        "symfony/dependency-injection": "^7.4 || ^8.0"
     },
     "require-dev": {
-        "symfony/filesystem": "^7.4",
-        "symfony/process": "^7.4",
-        "symfony/yaml": "^7.4",
+        "friends-of-behat/test-context": "^1.4",
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "phpstan/phpstan": "^2.0",
         "vimeo/psalm": "^6.0"
     },
     "config": {
@@ -34,14 +34,18 @@
             "FriendsOfBehat\\ServiceContainerExtension\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
     "scripts": {
         "test": [
             "vendor/bin/behat -f progress --strict -vvv --no-interaction --colors"
+        ],
+        "phpstan": [
+            "vendor/bin/phpstan analyse --no-progress"
+        ],
+        "cs": [
+            "vendor/bin/php-cs-fixer fix --dry-run --diff"
+        ],
+        "cs-fix": [
+            "vendor/bin/php-cs-fixer fix"
         ]
     }
 }
