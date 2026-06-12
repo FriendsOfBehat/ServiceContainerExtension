@@ -2,3 +2,4 @@
 
 /behat.yml
 /composer.lock
+/.php-cs-fixer.cache

@@ -1,0 +1,7 @@
+parameters:
+    level: max
+    paths:
+        - src
+    treatPhpDocTypesAsCertain: false
+    bootstrapFiles:
+        - phpstan/bootstrap.php

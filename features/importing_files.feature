@@ -72,31 +72,6 @@ Feature: Importing files
         When I run Behat
         Then it should pass
 
-    Scenario: Importing a parameter from a XML file
-        Given a Behat configuration containing:
-        """
-        default:
-            suites:
-                default:
-                    contexts:
-                        - FeatureContext:
-                            - "%foobar%"
-            extensions:
-                FriendsOfBehat\ServiceContainerExtension:
-                    imports:
-                        - features/bootstrap/config/services.xml
-        """
-        And a config file "features/bootstrap/config/services.xml" containing:
-        """
-        <container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://symfony.com/schema/dic/services">
-            <parameters>
-                <parameter key="foobar">shit happens</parameter>
-            </parameters>
-        </container>
-        """
-        When I run Behat
-        Then it should pass
-
     Scenario: Importing a parameter from a PHP file
         Given a Behat configuration containing:
         """

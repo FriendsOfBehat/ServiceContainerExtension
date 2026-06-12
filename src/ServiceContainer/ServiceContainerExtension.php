@@ -15,16 +15,13 @@ namespace FriendsOfBehat\ServiceContainerExtension\ServiceContainer;
 
 use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
-use FriendsOfBehat\CrossContainerExtension\ServiceContainer\CrossContainerExtension;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolver;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
@@ -32,27 +29,21 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  */
 final class ServiceContainerExtension implements Extension
 {
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getConfigKey(): string
     {
         return 'fob_service_container';
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function initialize(ExtensionManager $extensionManager): void
     {
-
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function configure(ArrayNodeDefinition $builder): void
     {
+        /** @psalm-suppress UnusedMethodCall */
         $builder
             ->children()
                 ->arrayNode('imports')
@@ -63,32 +54,36 @@ final class ServiceContainerExtension implements Extension
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function load(ContainerBuilder $container, array $config): void
     {
-        $loader = $this->createLoader($container, $config);
+        $loader = $this->createLoader($container);
+        $imports = $config['imports'] ?? [];
 
-        foreach ($config['imports'] as $file) {
+        if (!\is_array($imports)) {
+            return;
+        }
+
+        foreach ($imports as $file) {
             $loader->load($file);
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function process(ContainerBuilder $container): void
     {
-
     }
 
-    private function createLoader(ContainerBuilder $container, array $config): LoaderInterface
+    private function createLoader(ContainerBuilder $container): LoaderInterface
     {
-        $fileLocator = new FileLocator($container->getParameter('paths.base'));
+        $basePath = $container->getParameter('paths.base');
+        if (!\is_string($basePath)) {
+            throw new \UnexpectedValueException('Parameter "paths.base" must be a string.');
+        }
+
+        $fileLocator = new FileLocator($basePath);
 
         return new DelegatingLoader(new LoaderResolver([
-            new XmlFileLoader($container, $fileLocator),
             new YamlFileLoader($container, $fileLocator),
             new PhpFileLoader($container, $fileLocator),
         ]));
